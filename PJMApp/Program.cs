@@ -7,10 +7,9 @@
 namespace PJMApp
 {
     using System.Text;
+    using System.Text.Json;
     using Microsoft.SemanticKernel;
     using Microsoft.SemanticKernel.Memory;
-    using Microsoft.SemanticKernel.Orchestration;
-    using Microsoft.SemanticKernel.SkillDefinition;
     using ProjectManagementPlugin;
     using ProjectManagementPlugin.DataAccess;
     using ProjectManagementPlugin.Domain;
@@ -27,16 +26,19 @@ namespace PJMApp
         public static async Task Main(string[] args)
         {
             // Initialize SK and Import skills - Done by Iris Copilot Platform's Zero-Dev
-            var semanticKernel = Kernel.Builder.WithAzureChatCompletionService("iris-selfhelp", "https://iris-openai-dev.openai.azure.com/", "INPUT_KEY_HERE")
-                            .WithAzureTextEmbeddingGenerationService("text-embedding-ada-002", "https://iris-openai-dev.openai.azure.com/", "INPUT_KEY_HERE")
-                            .WithMemoryStorage(new VolatileMemoryStore())
-                            .Build();
+            var kernelBuilder = Kernel.CreateBuilder();
+            kernelBuilder.AddAzureOpenAIChatCompletion("iris-selfhelp", "https://iris-openai-dev.openai.azure.com/", "INPUT_KEY_HERE");
+#pragma warning disable SKEXP0010
+            kernelBuilder.AddAzureOpenAITextEmbeddingGeneration("text-embedding-ada-002", "https://iris-openai-dev.openai.azure.com/", "INPUT_KEY_HERE");
+#pragma warning restore SKEXP0010
+            //kernelBuilder.WithMemoryStorage(new VolatileMemoryStore());
+            var kernel = kernelBuilder.Build();
 
-            semanticKernel.ImportSkill(new ProjectNativePlugin(semanticKernel, new ProjectService(new ProjectRepository())));
-            semanticKernel.ImportSemanticSkillFromDirectory("C:\\Users\\pvelmurugan\\Downloads\\PJMCopilotSolution\\PJMCopilotSolution\\ProjectManagementPlugin", "SemanticPlugins");
+            kernel.ImportPluginFromObject(new ProjectNativePlugin(kernel, new ProjectService(new ProjectRepository())), "ProjectPlugin");
+            kernel.ImportPluginFromPromptDirectory("D:\\repos\\iris-copilot-innovations\\ProjectManagementPlugin\\SemanticPlugins");
 
             // Take out the function and invoke - Done by Iris Copilot Platform's Orchestrator
-            semanticKernel.Skills.TryGetFunction("_GLOBAL_FUNCTIONS_", "GetProjectDetails", out ISKFunction getProjectDetails);
+            kernel.Plugins.TryGetFunction("_GLOBAL_FUNCTIONS_", "GetProjectDetails", out KernelFunction getProjectDetails);
 
             // Passing chat transcript - Done by Iris Copilot Platform's Orchestrator
             var chatTranscript = new StringBuilder("Hello, How can I help you?");
@@ -44,13 +46,13 @@ namespace PJMApp
             var userInput = Console.ReadLine();
             do
             {
-                ContextVariables variables = new ContextVariables();
+                KernelArguments variables = new KernelArguments();
                 chatTranscript.AppendLine($"User: {userInput}");
                 variables["ChatTranscript"] = chatTranscript.ToString();
 
-                var pluginResponse = await semanticKernel.RunAsync(variables, getProjectDetails);
-                chatTranscript.AppendLine($"AI: {pluginResponse.Result}");
-                Console.WriteLine($"AI:{pluginResponse.Result}\r\nUser:");
+                var pluginResponse = await kernel.InvokeAsync(getProjectDetails, variables);
+                chatTranscript.AppendLine($"AI: {pluginResponse.GetValue<string>()}");
+                Console.WriteLine($"AI:{JsonSerializer.Serialize(pluginResponse)}\r\nUser:");
                 
                 userInput = Console.ReadLine();
             } 
