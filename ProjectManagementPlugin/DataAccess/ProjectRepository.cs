@@ -4,10 +4,10 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Text.Json;
+
 namespace ProjectManagementPlugin.DataAccess
 {
-    using Newtonsoft.Json;
-
     public class ProjectRepository : IProjectRepository
     {
         /// <summary>
@@ -17,7 +17,7 @@ namespace ProjectManagementPlugin.DataAccess
         /// <returns>Project details</returns>
         public async Task<string> GetProjectDetails(string projectId)
         {
-            var result = JsonConvert.SerializeObject(new { projectId, name = "test project" });
+            var result = JsonSerializer.Serialize(new { projectId, name = "test project" });
             return await Task.FromResult(result);
         }
     }
