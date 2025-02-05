@@ -16,11 +16,7 @@
     <PackageReference Include="AdaptiveExpressions" Version="4.20.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="8.0.2" />
-    <PackageReference Include="Microsoft.SemanticKernel" Version="0.17.230626.1-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AI.OpenAI" Version="0.17.230626.1-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Planning.ActionPlanner" Version="0.17.230626.1-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Planning.SequentialPlanner" Version="0.17.230626.1-preview" />
-    <PackageReference Include="Microsoft.SemanticKernel.Skills.OpenAPI" Version="0.17.230626.1-preview" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.19.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProjectManagementPlugin\ProjectManagementPlugin.csproj" />
