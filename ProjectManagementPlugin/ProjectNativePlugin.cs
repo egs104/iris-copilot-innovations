@@ -8,15 +8,13 @@ namespace ProjectManagementPlugin
 {
     using System.ComponentModel;
     using System.Text;
+    using System.Text.Json;
     using Microsoft.SemanticKernel;
-    using Microsoft.SemanticKernel.Orchestration;
-    using Microsoft.SemanticKernel.SkillDefinition;
-    using Newtonsoft.Json;
     using ProjectManagementPlugin.Domain;
 
     public class ProjectNativePlugin
     {
-        private readonly IKernel semanticKernel;
+        private readonly Kernel semanticKernel;
         private readonly IProjectService projectService;
 
         /// <summary>
@@ -24,7 +22,7 @@ namespace ProjectManagementPlugin
         /// </summary>
         /// <param name="semanticKernel">Semantic Kernel instance</param>
         /// <param name="projectService">Project service instance</param>
-        public ProjectNativePlugin(IKernel semanticKernel, IProjectService projectService) 
+        public ProjectNativePlugin(Kernel semanticKernel, IProjectService projectService) 
         {
             this.semanticKernel = semanticKernel ?? throw new ArgumentNullException(nameof(semanticKernel));
             this.projectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
@@ -54,18 +52,19 @@ namespace ProjectManagementPlugin
         /// </summary>
         /// <param name="projectId"></param>
         /// <returns></returns>
-        [SKFunction, SKName("GetProjectDetails"), Description("Get details of the projectId")]
-        public async Task<string> GetProjectDetails(SKContext chatVariables)
+        [KernelFunction("get_project_details")]
+        [Description("Get details of the projectId")]
+        public async Task<string> GetProjectDetails(FunctionResult chatVariables)
         {
-            this.semanticKernel.Skills.TryGetFunction("SemanticPlugins", "EntityExtractorFunction", out ISKFunction entityExtractor);
+            this.semanticKernel.Plugins.TryGetFunction("SemanticPlugins", "EntityExtractorFunction", out KernelFunction entityExtractor);
 
-            ContextVariables eeContext = new ContextVariables();
+            KernelArguments eeContext = new KernelArguments();
             eeContext["Example"] = EntityExtractorProjectExamples;
             eeContext["Need"] = "list of project ids of last user ask";
-            eeContext["Input"] = chatVariables["ChatTranscript"];
+            eeContext["Input"] = chatVariables.Metadata["ChatTranscript"];
 
-            var extractorResult = await this.semanticKernel.RunAsync(eeContext, entityExtractor);
-            var projectIdsList = JsonConvert.DeserializeObject<List<string>>(extractorResult.Result);
+            var extractorResult = await this.semanticKernel.InvokeAsync(entityExtractor, eeContext);
+            var projectIdsList = JsonSerializer.Deserialize<List<string>>(extractorResult.GetValue<string>());
 
             var pluginResponse = new StringBuilder();
             foreach(var projectId in projectIdsList)
