@@ -17,7 +17,7 @@ namespace ProjectManagementPlugin.DataAccess
         /// <returns>Project details</returns>
         public async Task<string> GetProjectDetails(string projectId)
         {
-            var result = JsonSerializer.Serialize(new { projectId, name = "test project", description = "The team will develop a new feature for the company's flagship software product, enhancing its data analytics capabilities. This project involves integrating third-party APIs and ensuring compliance with data privacy regulations." });
+            var result = JsonSerializer.Serialize(new { projectId, name = "test project", endDate="10-04-2025", description = "The team will develop a new feature for the company's flagship software product, enhancing its data analytics capabilities. This project involves integrating third-party APIs and ensuring compliance with data privacy regulations." });
             return await Task.FromResult(result);
         }
     }

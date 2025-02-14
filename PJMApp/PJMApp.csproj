@@ -14,9 +14,11 @@
     <PackageReference Include="AdaptiveCards" Version="3.0.0" />
     <PackageReference Include="AdaptiveCards.Templating" Version="1.4.0" />
     <PackageReference Include="AdaptiveExpressions" Version="4.20.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="8.0.2" />
-    <PackageReference Include="Microsoft.SemanticKernel" Version="1.19.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.1" />
+    <PackageReference Include="Microsoft.SemanticKernel" Version="1.36.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProjectManagementPlugin\ProjectManagementPlugin.csproj" />
