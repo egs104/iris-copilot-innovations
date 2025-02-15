@@ -9,16 +9,24 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <NoWarn>CS8600;CS8604</NoWarn>
+    <NoWarn>$(NoWarn);CA2007;IDE1006;SKEXP0001;SKEXP0110;OPENAI001</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AdaptiveCards" Version="3.0.0" />
     <PackageReference Include="AdaptiveCards.Templating" Version="1.4.0" />
     <PackageReference Include="AdaptiveExpressions" Version="4.20.1" />
+    <PackageReference Include="Azure.Identity" Version="1.13.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="9.0.2" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="9.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="9.0.1" />
     <PackageReference Include="Microsoft.SemanticKernel" Version="1.36.0" />
+    <PackageReference Include="Microsoft.SemanticKernel.Agents.Core" Version="1.37.0-alpha" />
+    <PackageReference Include="Microsoft.SemanticKernel.Connectors.AzureOpenAI" Version="1.37.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ProjectManagementPlugin\ProjectManagementPlugin.csproj" />
